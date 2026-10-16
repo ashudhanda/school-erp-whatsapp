@@ -1,0 +1,23 @@
+{
+  "name": "school-whatsapp-bot",
+  "version": "0.4.0",
+  "private": true,
+  "description": "School-scoped WhatsApp workflows and administration",
+  "type": "module",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env src/index.js",
+    "dev": "node --env-file-if-exists=.env --watch src/index.js",
+    "simulate": "node scripts/simulate.js",
+    "check": "node scripts/check.js",
+    "test": "node scripts/test.js",
+    "test:native": "node scripts/test.js native",
+    "test:libsql": "node scripts/test.js libsql"
+  },
+  "dependencies": {
+    "@libsql/client": "^0.14.0",
+    "express": "^4.21.2",
+    "multer": "^2.0.2",
+    "exceljs": "4.4.0"
+  }
+}
