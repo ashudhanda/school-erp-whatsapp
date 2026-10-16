@@ -1,0 +1,33 @@
+# CI for the school WhatsApp bot: syntax-check then the full test suite.
+# Runs on every pull request, and on pushes to main (plus the redesign branch)
+# that touch code, tests, scripts or dependencies.
+#
+# The suite runs TWICE per job — once against Node's native SQLite adapter and
+# once through the real @libsql/client local-file adapter — with fail-fast:
+# false so a failure on one adapter still shows the other adapter's result.
+# `npm run check` (node --check over src/, scripts/, test/) fails the build
+# fast on any syntax error before the suite even starts.
+name: School bot checks
+on:
+  pull_request:
+  push:
+    branches: [main, feat/whatsapp-school-redesign]
+    paths: ['src/**', 'test/**', 'scripts/**', 'package*.json', '.github/workflows/ci.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        adapter: [native, libsql]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install --ignore-scripts
+      - run: npm run check
+      - run: npm run test:${{ matrix.adapter }}
